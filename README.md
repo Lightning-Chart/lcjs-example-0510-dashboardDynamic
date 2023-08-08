@@ -36,7 +36,6 @@ Generally, LC JS Dashboards are static sized (for example, 2x2 grid) and size ca
 * [XY cartesian chart]
 * [Line series]
 * [Axis]
-* [Translate point]
 
 
 ## Support
@@ -60,9 +59,8 @@ Direct developer email support can be purchased through a [Support Plan][4] or b
 © LightningChart Ltd 2009-2022. All rights reserved.
 
 
-[Dashboard]: https://lightningchart.com/lightningchart-js-api-documentation/v4.1.0/classes/Dashboard.html
-[XY cartesian chart]: https://lightningchart.com/lightningchart-js-api-documentation/v4.1.0/classes/ChartXY.html
-[Line series]: https://lightningchart.com/lightningchart-js-api-documentation/v4.1.0/classes/LineSeries.html
-[Axis]: https://lightningchart.com/lightningchart-js-api-documentation/v4.1.0/classes/Axis.html
-[Translate point]: https://lightningchart.com/lightningchart-js-api-documentation/v4.1.0/functions/translatePoint.html
+[Dashboard]: https://lightningchart.com/js-charts/api-documentation/v4.2.0/classes/Dashboard.html
+[XY cartesian chart]: https://lightningchart.com/js-charts/api-documentation/v4.2.0/classes/ChartXY.html
+[Line series]: https://lightningchart.com/js-charts/api-documentation/v4.2.0/classes/LineSeries.html
+[Axis]: https://lightningchart.com/js-charts/api-documentation/v4.2.0/classes/Axis.html
 

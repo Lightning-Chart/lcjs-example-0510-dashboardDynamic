@@ -15,7 +15,7 @@
 
 const lcjs = require('@arction/lcjs')
 const xydata = require('@arction/xydata')
-const { lightningChart, emptyLine, translatePoint, Themes } = lcjs
+const { lightningChart, emptyLine, Themes } = lcjs
 const { createProgressiveTraceGenerator } = xydata
 
 const exampleContainer = document.getElementById('chart') || document.body
@@ -86,6 +86,7 @@ const addGraph = (name, data) => {
 
     const buttonRemoveChart = document.createElement('button')
     document.body.append(buttonRemoveChart)
+    buttonRemoveChart.style.display = 'none'
     buttonRemoveChart.innerHTML = 'X'
     buttonRemoveChart.style.position = 'absolute'
     buttonRemoveChart.style.zIndex = '1'
@@ -102,10 +103,12 @@ const addGraph = (name, data) => {
     })
 
     const updateRemoveButtonPosition = () => {
-        const posChartEngine = translatePoint({ x: 100, y: 100 }, chart.uiScale, chart.engine.scale)
-        const posChart = chart.engine.engineLocation2Client(posChartEngine.x, posChartEngine.y)
-        buttonRemoveChart.style.left = `${posChart.x - buttonRemoveChart.offsetWidth}px`
-        buttonRemoveChart.style.top = `${posChart.y}px`
+        requestAnimationFrame(() => {
+            const locationClient = chart.translateCoordinate(chart.getSizePixels(), chart.coordsRelative, chart.coordsClient)
+            buttonRemoveChart.style.display = 'block'
+            buttonRemoveChart.style.left = `${locationClient.clientX - buttonRemoveChart.offsetWidth}px`
+            buttonRemoveChart.style.top = `${locationClient.clientY}px`
+        })
     }
 
     const series = chart
