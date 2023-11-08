@@ -19,117 +19,101 @@ const { lightningChart, emptyLine, Themes } = lcjs
 const { createProgressiveTraceGenerator } = xydata
 
 const exampleContainer = document.getElementById('chart') || document.body
-
-const mainDiv = document.createElement('div')
-exampleContainer.append(mainDiv)
-mainDiv.style.position = 'absolute'
-mainDiv.style.width = '14.5%'
-mainDiv.style.height = 'auto'
-mainDiv.style.display = 'flex'
-mainDiv.style.justifyContent = 'center'
-mainDiv.style.flexDirection = 'row'
-mainDiv.style.color = 'black'
-mainDiv.style.zIndex = '1'
+if (exampleContainer === document.body) {
+    document.body.style.width = '100vw'
+    document.body.style.height = '100vh'
+    document.body.style.margin = '0px'
+}
+const layoutCharts = document.createElement('div')
+exampleContainer.append(layoutCharts)
+layoutCharts.style.position = 'absolute'
+layoutCharts.style.width = '100%'
+layoutCharts.style.minHeight = '100%'
+layoutCharts.style.display = 'flex'
+layoutCharts.style.flexDirection = 'column'
 
 const uiDiv = document.createElement('div')
-mainDiv.append(uiDiv)
+exampleContainer.append(uiDiv)
+uiDiv.style.position = 'fixed'
+uiDiv.style.width = '100px'
 uiDiv.style.display = 'flex'
 uiDiv.style.flexDirection = 'column'
 uiDiv.style.backgroundColor = 'transparent'
 uiDiv.style.color = exampleContainer.parentElement && window.getComputedStyle(exampleContainer.parentElement).color
+uiDiv.style.zIndex = '100'
 
 const uiDivTitle = document.createElement('span')
 uiDiv.append(uiDivTitle)
 uiDivTitle.innerHTML = 'Click to add graph'
 
-// NOTE: When this is exceeded dashboard would have to be recreated again with all charts and data.
-// There is no existing identified limit for this value though.
-const maxCellsCount = 5
-
-const dashboard = lightningChart()
-    .Dashboard({
-        numberOfColumns: 2,
-        numberOfRows: maxCellsCount,
-        // theme: Themes.darkGold
-    })
-    .setSplitterStyle(emptyLine)
-    .setColumnWidth(0, 1)
-    .setColumnWidth(1, 6)
-
+const lc =lightningChart()
 const charts = []
 
-const updateDashboardRowHeights = () => {
-    for (let row = 0; row < maxCellsCount; row += 1) {
-        dashboard.setRowHeight(row, 0.00001)
-    }
-    charts.forEach((chart) => dashboard.setRowHeight(chart.row, 1))
-}
-
 const addGraph = (name, data) => {
-    const freeRow = new Array(maxCellsCount).fill(0).findIndex((_, row) => charts.find((item) => item.row === row) === undefined)
-    if (freeRow < 0) {
-        // Dashboard has no more row slots.
-        alert(`Dashboard is not allocated for more than ${maxCellsCount} graphs`)
-        return
-    }
+    const container = document.createElement('div')
+    layoutCharts.append(container)
+    const chart = lc
+    .ChartXY({
+        container,
+        // theme: Themes.darkGold
+    })
+    .setTitle('')
+    .setPadding({ top: 0, left: 100 })
 
-    const chart = dashboard
-        .createChartXY({
-            columnIndex: 1,
-            columnSpan: 1,
-            rowIndex: freeRow,
-        })
-        .setTitle(name)
-        .setTitleFont((font) => font.setSize(12))
-        .setTitleMargin({ top: 0, bottom: 0 })
-        .setPadding({ top: 0 })
-
+    
+    const axisX = chart.getDefaultAxisX()
+    const axisY = chart.getDefaultAxisY().setThickness({ min: 80 })
+    
     const buttonRemoveChart = document.createElement('button')
-    document.body.append(buttonRemoveChart)
-    buttonRemoveChart.style.display = 'none'
+    container.append(buttonRemoveChart)
     buttonRemoveChart.innerHTML = 'X'
     buttonRemoveChart.style.position = 'absolute'
+    buttonRemoveChart.style.right = '0px'
+    buttonRemoveChart.style.top = '0px'
     buttonRemoveChart.style.zIndex = '1'
-
-    buttonRemoveChart.addEventListener('click', (e) => {
+    
+    buttonRemoveChart.onclick = (e) => {
         chart.dispose()
-        document.body.removeChild(buttonRemoveChart)
+        container.remove()
+        
+        
         charts.splice(
             charts.findIndex((item) => item.chart === chart),
             1,
-        )
-        updateDashboardRowHeights()
-        charts.forEach((item) => item.updateRemoveButtonPosition())
-    })
-
-    const updateRemoveButtonPosition = () => {
-        requestAnimationFrame(() => {
-            const locationClient = chart.translateCoordinate(chart.getSizePixels(), chart.coordsRelative, chart.coordsClient)
-            buttonRemoveChart.style.display = 'block'
-            buttonRemoveChart.style.left = `${locationClient.clientX - buttonRemoveChart.offsetWidth}px`
-            buttonRemoveChart.style.top = `${locationClient.clientY}px`
-        })
-    }
-
-    const series = chart
+            )
+            buttonRemoveChart.onclick = undefined
+            changeCharts()
+        }
+        
+        const series = chart
         .addPointLineSeries({
             dataPattern: { pattern: 'ProgressiveX' },
         })
         .setName(name)
         .add(data)
+        
+        charts.push({
+            chart,
+            container
+        })
+        changeCharts()
+        container.scrollTo()
 
-    charts.push({
-        row: freeRow,
-        chart,
-        updateRemoveButtonPosition,
-    })
-    updateDashboardRowHeights()
-    charts.forEach((item) => item.updateRemoveButtonPosition())
+
+    function changeCharts() {
+        const parentHeight =  exampleContainer.getBoundingClientRect().height 
+        const numberOfCharts = charts.length
+        const divHeight = (parentHeight ) / numberOfCharts + 'px'
+        container.style.height = divHeight
+        charts.forEach(({chart, container}) => {
+            container.style.height = divHeight
+        })
+    }
 }
 
 ;(async () => {
-    for (let i = 0; i < 6; i += 1) {
-        const label = `Measurement ${new Date(Date.now() - i * 24 * 60 * 60 * 1000).toLocaleDateString()}`
+    for (let i = 0; i < 20; i += 1) {
+        const label = `${new Date(Date.now() - i * 24 * 60 * 60 * 1000).toLocaleDateString()}`
         const data = await createProgressiveTraceGenerator().setNumberOfPoints(200).generate().toPromise()
 
         const buttonAddChart = document.createElement('button')
@@ -143,8 +127,3 @@ const addGraph = (name, data) => {
     }
 })()
 
-window.addEventListener('resize', () => {
-    requestAnimationFrame(() => {
-        charts.forEach((item) => item.updateRemoveButtonPosition())
-    })
-})

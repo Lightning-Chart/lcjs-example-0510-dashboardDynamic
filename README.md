@@ -23,11 +23,7 @@ Example on how a dynamic chart dashboard can be created with LightningChart JS.
 
 The use case is an application where charts can be added and removed at users whim to perform different kinds of analysis within a dynamic application setting.
 
-This can be achieved out of the box with LightningChart by placing each chart in its own HTML DIV in same way as most web charts on the market. However, the purpose of this example is to show how to utilize the LightningChart JS Dashboard component to achieve the same purposes with the absolute best performance.
-
-The performance problem with placing each chart in its own DIV is that all plotting preparation has to be done separately. LC JS Dashboard was specifically designed to be the answer to this problem - it allows efficient sharing of plotting resources and processes to greatly increase the loading speed of charts (with 10 charts, up to 100% faster) as well as run-time performance.
-
-Generally, LC JS Dashboards are static sized (for example, 2x2 grid) and size can't be changed afterwards. However, with some creative coding this limitation can be worked around by preallocating the Dashboard for some number of "maximum charts" and then programmatically resizing the Dashboard cells which actually have charts in them, which is exactly what we do in this example.
+This can be achieved out of the box with LightningChart by placing each chart in its own HTML DIV in same way as most web charts on the market.
 
 
 ## API Links
@@ -59,8 +55,8 @@ Direct developer email support can be purchased through a [Support Plan][4] or b
 © LightningChart Ltd 2009-2022. All rights reserved.
 
 
-[Dashboard]: https://lightningchart.com/js-charts/api-documentation/v4.2.0/classes/Dashboard.html
-[XY cartesian chart]: https://lightningchart.com/js-charts/api-documentation/v4.2.0/classes/ChartXY.html
-[Line series]: https://lightningchart.com/js-charts/api-documentation/v4.2.0/classes/LineSeries.html
-[Axis]: https://lightningchart.com/js-charts/api-documentation/v4.2.0/classes/Axis.html
+[Dashboard]: https://lightningchart.com/js-charts/api-documentation/v5.0.1/classes/Dashboard.html
+[XY cartesian chart]: https://lightningchart.com/js-charts/api-documentation/v5.0.1/classes/ChartXY.html
+[Line series]: https://lightningchart.com/js-charts/api-documentation/v5.0.1/classes/LineSeries.html
+[Axis]: https://lightningchart.com/js-charts/api-documentation/v5.0.1/classes/Axis.html
 
