@@ -55,7 +55,7 @@ const addGraph = (name, data) => {
     const chart = lc
     .ChartXY({
         container,
-        // theme: Themes.darkGold
+        theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
     })
     .setTitle('')
     .setPadding({ top: 0, left: 100 })
