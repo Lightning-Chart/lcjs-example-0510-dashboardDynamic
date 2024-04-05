@@ -46,7 +46,9 @@ const uiDivTitle = document.createElement('span')
 uiDiv.append(uiDivTitle)
 uiDivTitle.innerHTML = 'Click to add graph'
 
-const lc =lightningChart()
+const lc =lightningChart({
+            resourcesBaseUrl: new URL(document.head.baseURI).origin + new URL(document.head.baseURI).pathname + 'resources/',
+        })
 const charts = []
 
 const addGraph = (name, data) => {
