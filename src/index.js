@@ -13,9 +13,9 @@
  * and then programmatically resizing the Dashboard cells which actually have charts in them.
  */
 
-const lcjs = require('@arction/lcjs')
-const xydata = require('@arction/xydata')
-const { lightningChart, emptyLine, Themes } = lcjs
+const lcjs = require('@lightningchart/lcjs')
+const xydata = require('@lightningchart/xydata')
+const { lightningChart, emptyFill, Themes } = lcjs
 const { createProgressiveTraceGenerator } = xydata
 
 const exampleContainer = document.getElementById('chart') || document.body
@@ -46,7 +46,7 @@ const uiDivTitle = document.createElement('span')
 uiDiv.append(uiDivTitle)
 uiDivTitle.innerHTML = 'Click to add graph'
 
-const lc =lightningChart({
+const lc = lightningChart({
             resourcesBaseUrl: new URL(document.head.baseURI).origin + new URL(document.head.baseURI).pathname + 'resources/',
         })
 const charts = []
@@ -55,17 +55,16 @@ const addGraph = (name, data) => {
     const container = document.createElement('div')
     layoutCharts.append(container)
     const chart = lc
-    .ChartXY({
-        container,
-        theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
-    })
-    .setTitle('')
-    .setPadding({ top: 0, left: 100 })
+        .ChartXY({
+            container,
+            theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
+        })
+        .setTitle('')
+        .setPadding({ top: 0, left: 100 })
 
-    
     const axisX = chart.getDefaultAxisX()
     const axisY = chart.getDefaultAxisY().setThickness({ min: 80 })
-    
+
     const buttonRemoveChart = document.createElement('button')
     container.append(buttonRemoveChart)
     buttonRemoveChart.innerHTML = 'X'
@@ -73,41 +72,40 @@ const addGraph = (name, data) => {
     buttonRemoveChart.style.right = '0px'
     buttonRemoveChart.style.top = '0px'
     buttonRemoveChart.style.zIndex = '1'
-    
+
     buttonRemoveChart.onclick = (e) => {
         chart.dispose()
         container.remove()
-        
-        
+
         charts.splice(
             charts.findIndex((item) => item.chart === chart),
             1,
-            )
-            buttonRemoveChart.onclick = undefined
-            changeCharts()
-        }
-        
-        const series = chart
-        .addPointLineSeries({
-            dataPattern: { pattern: 'ProgressiveX' },
+        )
+        buttonRemoveChart.onclick = undefined
+        changeCharts()
+    }
+
+    const series = chart
+        .addPointLineAreaSeries({
+            dataPattern: 'ProgressiveX',
         })
+        .setAreaFillStyle(emptyFill)
         .setName(name)
         .add(data)
-        
-        charts.push({
-            chart,
-            container
-        })
-        changeCharts()
-        container.scrollTo()
 
+    charts.push({
+        chart,
+        container,
+    })
+    changeCharts()
+    container.scrollTo()
 
     function changeCharts() {
-        const parentHeight =  exampleContainer.getBoundingClientRect().height 
+        const parentHeight = exampleContainer.getBoundingClientRect().height
         const numberOfCharts = charts.length
-        const divHeight = (parentHeight ) / numberOfCharts + 'px'
+        const divHeight = parentHeight / numberOfCharts + 'px'
         container.style.height = divHeight
-        charts.forEach(({chart, container}) => {
+        charts.forEach(({ chart, container }) => {
             container.style.height = divHeight
         })
     }
@@ -128,4 +126,3 @@ const addGraph = (name, data) => {
         if (i < 3) addGraph(label, data)
     }
 })()
-
