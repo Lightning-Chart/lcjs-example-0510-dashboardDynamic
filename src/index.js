@@ -57,6 +57,7 @@ const addGraph = (name, data) => {
     const chart = lc
         .ChartXY({
             container,
+            legend: { visible: false },
             theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
         })
         .setTitle('')
@@ -85,13 +86,7 @@ const addGraph = (name, data) => {
         changeCharts()
     }
 
-    const series = chart
-        .addPointLineAreaSeries({
-            dataPattern: 'ProgressiveX',
-        })
-        .setAreaFillStyle(emptyFill)
-        .setName(name)
-        .add(data)
+    const series = chart.addLineSeries().setName(name).appendJSON(data)
 
     charts.push({
         chart,
